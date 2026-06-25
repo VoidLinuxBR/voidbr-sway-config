@@ -1,0 +1,70 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 4,
+
+    "modules-left": [
+        "sway/workspaces",
+        "sway/mode"
+    ],
+
+    "modules-center": [
+        "clock"
+    ],
+
+    "modules-right": [
+        "pulseaudio",
+        "network",
+        "cpu",
+        "memory",
+        "battery",
+        "tray"
+    ],
+
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}"
+    },
+
+    "clock": {
+        "format": "{:%d/%m/%Y  %H:%M}",
+        "tooltip-format": "{:%A, %d/%m/%Y}"
+    },
+
+    "pulseaudio": {
+        "format": "VOL {volume}%",
+        "format-muted": "VOL mutado",
+        "on-click": "pavucontrol",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
+        "tooltip": true
+    },
+
+    "cpu": {
+        "format": "CPU {usage}%",
+        "on-click": "foot -e cpufreq-bench"
+    },
+
+    "memory": {
+        "format": "RAM {}%",
+        "on-click": "foot -e htop"
+    },
+
+    "battery": {
+        "format": "BAT {capacity}%",
+        "format-charging": "BAT {capacity}% carregando",
+        "format-plugged": "BAT {capacity}% tomada",
+        "states": {
+            "warning": 30,
+            "critical": 15
+        }
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    }
+}

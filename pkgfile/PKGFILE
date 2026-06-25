@@ -1,7 +1,7 @@
-# Maintainer: Vilmar Catafesta <vcatafesta@gmail.com>
+# Maintainer: Eduardo Charquero <eduardo.charquero@gmail.com>
 
-pkgname=voidbr-pkgname
-pkgdesc="Package template for VoidLinuxBR"
+pkgname=voidbr-sway-config
+pkgdesc="Skel config for VoidBR SWAY Meta Package"
 pkgver=$(date +%Y%m%d)
 pkgrel=$(date +%H%M)
 provides=()
@@ -14,13 +14,6 @@ source=("git+${url}.git")
 md5sums=('SKIP')
 makedepends=()
 depends=()
-
-# Automatically detect and use the correct install file
-if [ -e "${pkgname}.install" ]; then
-	install=${pkgname}.install
-elif [ -e "pkgbuild.install" ]; then
-	install=pkgfile.install
-fi
 
 package() {
 	# Verify default folder

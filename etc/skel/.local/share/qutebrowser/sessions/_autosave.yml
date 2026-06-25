@@ -1,0 +1,28 @@
+windows:
+- geometry: !!binary |
+    AdnQywADAAAAAAAAAAAAAAAAAmcAAAFoAAAAAAAAAAAAAAJnAAABaAAAAAAAAAAABQAAAAAAAAAA
+    AAAAAmcAAAFo
+  tabs:
+  - active: true
+    history:
+    - last_visited: '2026-06-24T14:55:37'
+      pinned: false
+      title: DuckDuckGo Private Search Engine
+      url: https://start.duckduckgo.com/
+    - last_visited: '2026-06-24T14:56:00'
+      pinned: false
+      title: i at DuckDuckGo
+      url: https://duckduckgo.com/?ia=web&origin=funnel_home_website&t=h_&hps=1&start=1&q=i
+    - last_visited: '2026-06-24T14:56:43'
+      pinned: false
+      title: voidbr.org at DuckDuckGo
+      url: https://duckduckgo.com/?q=voidbr.org&start=1&t=h_&ia=web
+    - active: true
+      last_visited: '2026-06-24T14:56:43'
+      pinned: false
+      scroll-pos:
+        x: 0
+        y: 0
+      title: VoidBR - Comunidade Void Linux no Brasil
+      url: https://www.voidbr.org/
+      zoom: 1.0

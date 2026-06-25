@@ -1,3 +1,3 @@
-# voidbr-pkgfile
+# voidbr-sway-config
 
-Template for VoidBR pkgmake/pkgfile packages
+Skel config for VoidBR SWAY Meta Package 

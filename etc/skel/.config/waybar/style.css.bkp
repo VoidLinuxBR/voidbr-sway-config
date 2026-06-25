@@ -1,0 +1,72 @@
+* {
+    font-family: "Fira Sans", "Noto Sans", "Noto Color Emoji", sans-serif;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background: #1e1e2e;
+    color: #cdd6f4;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    color: #cdd6f4;
+    background: transparent;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    background: #89b4fa;
+    color: #11111b;
+}
+
+#workspaces button.urgent {
+    background: #f38ba8;
+    color: #11111b;
+}
+
+#clock,
+#pulseaudio,
+#network,
+#cpu,
+#memory,
+#battery,
+#tray {
+    padding: 0 10px;
+}
+
+#pulseaudio {
+    background: #313244;
+}
+
+#network {
+    background: #45475a;
+}
+
+#cpu {
+    background: #a6e3a1;
+    color: #11111b;
+}
+
+#memory {
+    background: #cba6f7;
+    color: #11111b;
+}
+
+#battery {
+    background: #f9e2af;
+    color: #11111b;
+}
+
+#battery.warning {
+    background: #fab387;
+    color: #11111b;
+}
+
+#battery.critical {
+    background: #f38ba8;
+    color: #11111b;
+}
