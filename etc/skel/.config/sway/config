@@ -1,6 +1,7 @@
 # Variáveis principais
 set $mod Mod4
-set $term foot
+#set $term foot
+set $term xfce4-terminal
 set $naveg firefox
 set $menu wofi --show drun
 
