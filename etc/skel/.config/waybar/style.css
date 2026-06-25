@@ -1,90 +1,154 @@
 * {
-    font-family: "Noto Sans", "Fira Sans", "Font Awesome 6 Free", sans-serif;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font Mono", sans-serif;
     font-size: 13px;
-    font-weight: 600;
-    min-height: 0;
     border: none;
+    min-height: 0;
 }
 
 window#waybar {
-    background: #11111b;
-    color: #cdd6f4;
+    background: transparent;
+    color: #c0caf5;
 }
 
-tooltip {
-    background: #1e1e2e;
-    color: #cdd6f4;
-    border: 1px solid #45475a;
-    border-radius: 8px;
-}
+/* ===========================
+   Workspaces
+   =========================== */
 
 #workspaces {
-    padding-left: 4px;
+    margin: 6px 0 6px 8px;
+    padding: 2px;
+    background: #24283b;
+    border-radius: 10px;
 }
 
 #workspaces button {
     padding: 0 10px;
-    margin: 4px 2px;
+    color: #7aa2f7;
     border-radius: 8px;
-    color: #a6adc8;
-    background: #1e1e2e;
+    transition: all .2s;
 }
 
-#workspaces button.focused,
-#workspaces button.active {
-    color: #11111b;
-    background: #89b4fa;
+#workspaces button:hover {
+    background: #414868;
+}
+
+#workspaces button.focused {
+    background: #7aa2f7;
+    color: #1a1b26;
 }
 
 #workspaces button.urgent {
-    color: #11111b;
-    background: #f38ba8;
+    background: #f7768e;
+    color: white;
 }
 
-#mode {
-    margin: 4px 4px;
-    padding: 0 10px;
-    border-radius: 8px;
-    color: #11111b;
-    background: #f38ba8;
-}
+/* ===========================
+   Módulos
+   =========================== */
 
-#clock {
-    margin: 4px 0;
-    padding: 0 16px;
-    border-radius: 8px;
-    color: #cdd6f4;
-    background: #1e1e2e;
-}
-
+#mode,
+#clock,
 #pulseaudio,
 #network,
 #cpu,
 #memory,
 #battery,
-#tray {
-    margin: 4px 2px;
-    padding: 0 10px;
-    border-radius: 8px;
-    color: #cdd6f4;
-    background: #1e1e2e;
+#temperature,
+#bluetooth,
+#tray,
+#idle_inhibitor,
+#mpris,
+#window {
+
+    background: #24283b;
+    border-radius: 10px;
+    margin: 6px 3px;
+    padding: 0 12px;
 }
 
-#pulseaudio:hover,
-#network:hover,
-#cpu:hover,
-#memory:hover {
-    background: #313244;
+/* Janela */
+
+#window {
+    color: #c0caf5;
+    font-weight: bold;
 }
 
-#pulseaudio.muted,
-#network.disconnected,
-#battery.critical {
-    color: #11111b;
-    background: #f38ba8;
+/* Música */
+
+#mpris {
+    color: #bb9af7;
+}
+
+/* Áudio */
+
+#pulseaudio {
+    color: #bb9af7;
+}
+
+/* Rede */
+
+#network {
+    color: #73daca;
+}
+
+/* Bluetooth */
+
+#bluetooth {
+    color: #7dcfff;
+}
+
+/* Temperatura */
+
+#temperature {
+    color: #ff9e64;
+}
+
+/* CPU */
+
+#cpu {
+    color: #e0af68;
+}
+
+/* RAM */
+
+#memory {
+    color: #9ece6a;
+}
+
+/* Bateria */
+
+#battery {
+    color: #7dcfff;
 }
 
 #battery.warning {
-    color: #11111b;
-    background: #fab387;
+    color: #ff9e64;
+}
+
+#battery.critical {
+    color: #f7768e;
+}
+
+#battery.charging {
+    color: #9ece6a;
+}
+
+/* Relógio */
+
+#clock {
+    color: #f7768e;
+}
+
+/* Tray */
+
+#tray {
+    padding-right: 10px;
+}
+
+/* Tooltip */
+
+tooltip {
+    background: #24283b;
+    border: 1px solid #7aa2f7;
+    color: #c0caf5;
 }

@@ -13,6 +13,7 @@ bindsym $mod+Shift+q kill
 
 # Recarregar / sair
 bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Sair do Sway?' -b 'Sim' 'swaymsg exit'
 
 # Foco com hjkl
