@@ -14,6 +14,7 @@
     ],
 
     "modules-right": [
+        "custom/help",
         "pulseaudio",
         "network",
         "cpu",
@@ -29,8 +30,15 @@
     },
 
     "clock": {
-        "format": " {:%d/%m/%Y}   {:%H:%M}",
-        "tooltip-format": "{:%A, %d/%m/%Y}"
+         "format": " {:%d/%m/%Y   %H:%M}",
+         "tooltip-format": "{:%A, %d/%m/%Y}"
+    },
+
+    "custom/help": {
+        "format": "󰘥 Help",
+        "tooltip": true,
+        "tooltip-format": "VoidBR Shortcuts\nClique ou pressione Super+F1",
+        "on-click": "voidbr-shortcuts"
     },
 
     "pulseaudio": {

@@ -29,13 +29,20 @@
     },
 
     "clock": {
-        "format": "{:%d/%m/%Y  %H:%M}",
+        "format": " {:%d/%m/%Y}   {:%H:%M}",
         "tooltip-format": "{:%A, %d/%m/%Y}"
     },
 
     "pulseaudio": {
-        "format": "VOL {volume}%",
-        "format-muted": "VOL mutado",
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 Mutado",
+        "format-icons": {
+            "default": [
+                "",
+                "",
+                ""
+            ]
+        },
         "on-click": "pavucontrol",
         "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
@@ -43,24 +50,43 @@
         "tooltip": true
     },
 
+    "network": {
+        "format-wifi": " {essid}",
+        "format-ethernet": "󰈀 Ethernet",
+        "format-disconnected": "󰖪 Offline"
+    },
+
     "cpu": {
-        "format": "CPU {usage}%",
+        "format": " {usage}%",
         "on-click": "foot -e cpufreq-bench"
     },
 
     "memory": {
-        "format": "RAM {}%",
+        "format": "󰍛 {}%",
         "on-click": "foot -e htop"
     },
 
     "battery": {
-        "format": "BAT {capacity}%",
-        "format-charging": "BAT {capacity}% carregando",
-        "format-plugged": "BAT {capacity}% tomada",
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": " {capacity}%",
         "states": {
             "warning": 30,
             "critical": 15
-        }
+        },
+        "format-icons": [
+            "󰂎",
+            "󰁺",
+            "󰁻",
+            "󰁼",
+            "󰁽",
+            "󰁾",
+            "󰁿",
+            "󰂀",
+            "󰂁",
+            "󰂂",
+            "󰁹"
+        ]
     },
 
     "tray": {
