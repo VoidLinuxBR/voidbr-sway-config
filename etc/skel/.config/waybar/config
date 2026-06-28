@@ -16,10 +16,10 @@
     "modules-right": [
         "custom/help",
         "pulseaudio",
-        "network",
         "cpu",
         "memory",
         "battery",
+        "network",
         "tray"
     ],
 

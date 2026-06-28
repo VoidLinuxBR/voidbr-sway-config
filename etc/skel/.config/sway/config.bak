@@ -9,7 +9,6 @@ set $menu wofi --show drun
 bindsym $mod+Return exec $term
 bindsym $mod+w exec $naveg
 bindsym $mod+d exec $menu
-bindsym $mod+F1 exec voidbr-shortcuts
 bindsym $mod+Shift+q kill
 
 # Recarregar / sair
@@ -107,15 +106,6 @@ input type:keyboard {
     xkb_layout br
     xkb_variant abnt2
     xkb_model abnt2
-}
-
-input type:touchpad {
-    tap enabled
-    natural_scroll enabled
-    middle_emulation enabled
-    dwt enabled
-    accel_profile adaptive
-    pointer_accel 0.3
 }
 
 # Screenshots
