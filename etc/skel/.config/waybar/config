@@ -56,7 +56,7 @@
     "format": " VoidBR",
     "tooltip": true,
     "tooltip-format": "Sobre o VoidBR e o sistema",
-    "on-click": "foot -e bash -c \"fastfetch; read -n 1 -s -r -p 'Pressione qualquer tecla para fechar...'\""
+    "on-click": "bash -c \"fastfetch --logo none | yad --text-info --title='Sobre o VoidBR' --width=460 --height=460 --fontname='monospace 10' --button=Fechar:0\""
   },
   "network": {
     "format-wifi": " {essid}",
