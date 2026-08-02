@@ -143,8 +143,8 @@ output * bg $HOME/.local/share/backgrounds/void.png fill
 
 # Audio start pipewire
 exec --no-startup-id pipewire
-exec --no-startup-id wireplumber
-exec --no-startup-id pipewire-pulse
+#exec --no-startup-id wireplumber
+#exec --no-startup-id pipewire-pulse
 
 # Audio start pulseaudio
 #exec --no-startup-id pulseaudio
