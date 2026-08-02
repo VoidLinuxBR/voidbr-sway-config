@@ -1,12 +1,12 @@
 [
   {
     "label": "Lock",
-    "exec": "hyprlock",
+    "exec": "swaylock",
     "icon": "system-lock-screen"
   },
   {
     "label": "Logout",
-    "exec": "pkill Hyprland",
+    "exec": "pkill sway",
     "icon": "system-log-out"
   },
   {
