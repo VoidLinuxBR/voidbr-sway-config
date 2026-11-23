@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=VoidBR Sway Tweaks
+Name[pt_BR]=VoidBR Sway Tweaks
+Comment=Janelas, barra em ilha, aparência, papel de parede, teclado e áreas de trabalho do Sway
+Comment[pt_BR]=Janelas, barra em ilha, aparência, papel de parede, teclado e áreas de trabalho do Sway
+Exec=voidbr-sway-tweaks
+Icon=org.voidbr.SwayTweaks
+Terminal=false
+Categories=Settings;DesktopSettings;GTK;
+Keywords=sway;waybar;tema;papel;parede;teclado;touchpad;janelas;bordas;gaps;tweaks;
+OnlyShowIn=sway;
+StartupNotify=true

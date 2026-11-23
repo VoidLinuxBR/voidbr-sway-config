@@ -8,6 +8,7 @@
   "modules-right": [
     "custom/menu",
     "custom/help",
+    "custom/tweaks",
     "pulseaudio",
     "cpu",
     "memory",
@@ -47,6 +48,12 @@
     "tooltip": true,
     "tooltip-format": "VoidBR Sway Shortcuts\nClique ou pressione Super+F1",
     "on-click": "voidbr-sway-shortcuts"
+  },
+  "custom/tweaks": {
+    "format": " 󰒓 ",
+    "tooltip": true,
+    "tooltip-format": "VoidBR Sway Tweaks\nClique ou pressione Super+Shift+T",
+    "on-click": "voidbr-sway-tweaks"
   },
   "custom/wallpaper": {
     "format": " ",

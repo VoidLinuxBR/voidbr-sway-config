@@ -151,6 +151,7 @@ button:hover {
 #custom-about,
 #custom-menu,
 #custom-help,
+#custom-tweaks,
 #custom-wallpaper,
 #clock,
 #tray {
@@ -170,6 +171,9 @@ button:hover {
 }
 #custom-help {
     color: @yellow;
+}
+#custom-tweaks {
+    color: @green;
 }
 #custom-wallpaper {
     color: @magenta;
@@ -208,6 +212,7 @@ button:hover {
 #custom-menu:hover,
 #custom-power:hover,
 #custom-help:hover,
+#custom-tweaks:hover,
 #pulseaudio:hover,
 #cpu:hover,
 #memory:hover,

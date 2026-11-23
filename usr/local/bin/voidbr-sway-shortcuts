@@ -19,6 +19,7 @@ SHORTCUTS = [
         ("Super + Shift + C", _("Recarregar configuração do Sway")),
         ("Super + Shift + R", _("Reiniciar o Sway")),
         ("Super + Shift + E", _("Encerrar sessão do Sway")),
+        ("Super + Shift + T", _("Abrir o VoidBR Sway Tweaks")),
         ("Super + Shift + Q", _("Fechar janela em foco")),
         ("Super + L", _("Bloquear tela")),
         ("Print", _("Capturar tela")),

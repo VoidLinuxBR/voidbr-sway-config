@@ -9,7 +9,7 @@ set $menu wofi --show drun
 bindsym $mod+Return exec $term
 bindsym $mod+w exec $naveg
 bindsym $mod+d exec $menu
-bindsym $mod+F1 exec voidbr-shortcuts
+bindsym $mod+F1 exec voidbr-sway-shortcuts
 bindsym $mod+Shift+q kill
 
 # Recarregar / sair
@@ -47,8 +47,9 @@ smart_gaps off
 default_border pixel 2
 default_floating_border pixel 2
 # Garantir gaps no workspace atual após reload
-exec_always swaymsg gaps inner current set 10
-exec_always swaymsg gaps outer current set 5
+# (o voidbr-sway-tweaks reaplica os espaços; estas linhas desfaziam a cada reload)
+#exec_always swaymsg gaps inner current set 10
+#exec_always swaymsg gaps outer current set 5
 
 # xdg-user
 exec --no-startup-id xdg-user-dirs-update
@@ -137,6 +138,7 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym $mod+t exec thunar
 bindsym $mod+n exec foot -e nmtui
 bindsym $mod+Shift+n exec nwg-look
+bindsym $mod+Shift+t exec voidbr-sway-tweaks
 
 # Papel de parede
 output * bg $HOME/.local/share/backgrounds/void.png fill
@@ -185,3 +187,5 @@ bar {
 
 exec_always sh -c 'pkill waybar; waybar'
 
+# Ajustes do VoidBR Sway Tweaks (por último, valem por cima do resto)
+include ~/.config/sway/config.d/*
