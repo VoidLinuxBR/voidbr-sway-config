@@ -3,7 +3,7 @@
 #
 #   voidbr-sway-tweaks
 #   Created: seg 23 nov 2026 01:21:24 -04
-#   Updated: seg 23 nov 2026 01:55:22 -04
+#   Updated: seg 23 nov 2026 02:14:16 -04
 #
 #   Copyright (c) 2026, Vilmar Catafesta <vcatafesta@gmail.com>
 #   Copyright (c) 2026, VoidLinuxBR Team
@@ -22,6 +22,16 @@
 #     e troca pelo pkexec voidbr-sddm-theme; sem o pacote, a aba não aparece.
 #   - v1.2 (2026-11-23): Tela de login vai no mesmo ✅ Aplicar do app (antes a aba
 #     tinha um botão próprio no fim da página e o Aplicar dizia "Nada mudou").
+#   - v1.3 (2026-11-23): Aparência: "Escala da interface" (80% a 200%, de 10 em 10),
+#     como no voidbr-enlightenment-tweaks. Grava "output * scale" no
+#     90-voidbr-tweaks.conf e aplica na hora em todos os monitores; o Padrão Sway
+#     mantém a escala (é da tela, não do visual do VoidBR).
+#     Conferência com "sway -C" corrigida: roda sem tela (headless), porque com a
+#     placa já em uso ele falhava mesmo com o config certo e o app recusava tudo;
+#     e passa a ler os erros do 90-voidbr-tweaks.conf no registro, já que o sway -C
+#     sai com sucesso mesmo com comando errado.
+#     Tela de login aparece também com o voidbr-sddm-themes antigo (com o botão
+#     próprio da aba); antes um parâmetro novo derrubava a aba sem aviso.
 #
 #   Redistribution and use in source and binary forms, with or without
 #   modification, are permitted provided that the following conditions
@@ -63,7 +73,8 @@ Como aplica:
 
 O que o app altera (sempre no usuário atual):
     ~/.config/sway/config.d/90-voidbr-tweaks.conf  janelas, teclado, touchpad,
-                                                   áreas, cursor, papel de parede
+                                                   áreas, cursor, papel de parede,
+                                                   escala da tela
     ~/.config/sway/config                 só garante a linha "include" no fim
     ~/.config/waybar/config               posição, altura, módulos e áreas fixas
                                           (só esses valores; o resto fica)
@@ -90,7 +101,7 @@ import threading
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GLib, Gio
 
-VERSAO = "1.2"
+VERSAO = "1.3"
 APP_ID = "org.voidbr.SwayTweaks"
 
 HOME = os.path.expanduser("~")
@@ -111,6 +122,7 @@ NWG_LOOK = os.path.join(DADOS, "nwg-look", "gsettings")
 PREFS_APP = os.path.join(CONFIG, "voidbr", "sway-tweaks.json")
 BACKUP_DIR = os.path.join(CONFIG, "voidbr", "sway-tweaks-backup")
 ESCALA_MIN, ESCALA_MAX = 0.7, 2.0
+TELA_MIN, TELA_MAX = 80, 200  # "Escala da interface" (output * scale), em %
 
 PAPEL_PASTAS = ["/usr/share/backgrounds/voidbr", os.path.join(DADOS, "backgrounds")]
 PAPEL_VOIDBR = os.path.join(DADOS, "backgrounds", "void.png")
@@ -357,6 +369,11 @@ def _sway_comando(cmd, e, vars_, caminho, profundidade):
         e["cursor"] = args[2]
         if len(args) > 3:
             e["cursor_tam"] = num(args[3], 24)
+    elif c == "output" and len(args) >= 3 and args[1] == "scale":
+        try:
+            e["escala"] = round(float(args[2]) * 100)
+        except ValueError:
+            pass
     elif c == "output" and len(args) >= 3 and args[1] in ("bg", "background"):
         e["papel"] = _expandir(args[2])
         if len(args) > 3:
@@ -463,6 +480,10 @@ def tweaks_texto(v, secoes):
             l += ["## Áreas de trabalho (nomes)"] + binds + [""]
     if "aparencia" in secoes:
         l += ["## Cursor", f"seat * xcursor_theme {_q(v['cursor'])} {v['cursor_tam']}", ""]
+    # só quando o usuário escolheu: sem a linha, o sway decide a escala sozinho (HiDPI)
+    if "escala" in secoes and v.get("escala") and v.get("_escala_fixa"):
+        l += ["## Escala da tela (todos os monitores)",
+              f"output * scale {v['escala'] / 100:g}", ""]
     if "papel" in secoes and v.get("papel"):
         l += ["## Papel de parede", f"output * bg {_q(v['papel'])} {v['papel_modo']}", ""]
     if "teclado" in secoes:
@@ -487,22 +508,33 @@ def tweaks_texto(v, secoes):
     return "\n".join(l).rstrip("\n") + "\n"
 
 
-TODAS = ("janelas", "areas", "aparencia", "papel", "teclado", "touchpad")
+TODAS = ("janelas", "areas", "aparencia", "escala", "papel", "teclado", "touchpad")
 
 
 def sway_validar():
-    """None se o config está certo; senão, o texto do erro (sway -C)."""
+    """None se o arquivo do app está certo; senão, o erro que o sway apontou nele.
+
+    "sway -C" lê o config inteiro, mas antes abre um backend: com a placa de vídeo
+    já em uso pela sessão (ou sem placa) ele falharia mesmo com o config certo, por
+    isso roda sem tela (headless). E ele sai com sucesso mesmo com erro de comando:
+    o que vale são as linhas "Error on line … (arquivo)". Só os erros do
+    90-voidbr-tweaks.conf contam: um erro antigo no config do usuário não trava o app.
+    Se o sway -C nem rodar, não bloqueia."""
     if not shutil.which("sway"):
         return None
+    amb = dict(os.environ, WLR_BACKENDS="headless", WLR_RENDERER="pixman",
+               WLR_LIBINPUT_NO_DEVICES="1")
     try:
         r = subprocess.run(["sway", "-C", "-c", SWAY_CONF], capture_output=True, text=True,
-                           timeout=20)
+                           timeout=30, env=amb)
     except (OSError, subprocess.TimeoutExpired):
         return None
-    if r.returncode == 0:
-        return None
-    erros = [x for x in (r.stderr + r.stdout).splitlines() if "ERROR" in x or "Error" in x]
-    return "\n".join(erros[-4:]) or "configuração inválida"
+    erros = []
+    for linha in (r.stderr + r.stdout).splitlines():
+        if "Error on line" in linha and TWEAKS_CONF in linha:
+            m = re.search(r"Error on line \d+ '(.*)': (.*?) \(", linha)
+            erros.append(f"{m.group(1)} → {m.group(2)}" if m else linha.strip())
+    return "\n".join(erros[-4:]) or None
 
 
 def tweaks_gravar(v, secoes=TODAS):
@@ -876,6 +908,21 @@ def swaymsg(*cmd):
     return r.returncode == 0
 
 
+def sway_escala_atual():
+    """Escala em uso no primeiro monitor ligado (swaymsg -t get_outputs), em %."""
+    if not sway_rodando():
+        return None
+    try:
+        r = subprocess.run(["swaymsg", "-t", "get_outputs", "-r"], capture_output=True,
+                           text=True, timeout=5)
+        for saida in json.loads(r.stdout or "[]"):
+            if saida.get("active") and saida.get("scale"):
+                return round(float(saida["scale"]) * 100)
+    except (OSError, subprocess.TimeoutExpired, ValueError, TypeError):
+        pass
+    return None
+
+
 def sway_recarregar(v=None):
     """swaymsg reload (janelas continuam) e reaplica nas janelas já abertas
     o que o sway só usaria nas novas: espaços e bordas."""
@@ -888,6 +935,8 @@ def sway_recarregar(v=None):
         borda = v["borda"] if v["borda"] == "none" else f"{v['borda']} {v['borda_px']}"
         swaymsg(f"[tiling] border {borda}")
         swaymsg(f"[floating] border {borda}")
+        if v.get("escala") and v.get("_escala_fixa"):
+            swaymsg(f"output * scale {v['escala'] / 100:g}")
 
 
 def waybar_recarregar():
@@ -953,6 +1002,8 @@ def valores_atuais():
         "icones": gs_ler("icon-theme", VOIDBR_APARENCIA["icones"]),
         "cursor": s.get("cursor") or gs_ler("cursor-theme", VOIDBR_APARENCIA["cursor"]),
         "cursor_tam": cursor_tam,
+        "escala": max(TELA_MIN, min(TELA_MAX, s.get("escala") or sway_escala_atual() or 100)),
+        "_escala_fixa": bool(s.get("escala")),
         "fonte_ui": m.group(1) if m else fonte_ui,
         "fonte_ui_tam": int(float(m.group(2))) if m else 10,
         "escuro": gs_ler("color-scheme", "prefer-dark") == "prefer-dark",
@@ -984,12 +1035,14 @@ GRUPOS = {
                 "foco_mouse", "layout", "fonte_nome", "fonte_tam", "cor"),
     "barra": ("estilo", "posicao", "altura", "opacidade", "modulos"),
     "aparencia": ("gtk", "icones", "cursor", "cursor_tam", "fonte_ui", "fonte_ui_tam", "escuro"),
+    "escala": ("escala",),
     "papel": ("papel", "papel_modo"),
     "teclado": ("layouts", "variante", "modelo", "alternar", "numlock", "repeticao", "atraso"),
     "touchpad": ("toque", "natural", "digitando", "velocidade"),
     "areas": ("areas_num", "areas_nomes", "areas_formato"),
 }
 NOMES_GRUPOS = {"janelas": "janelas", "barra": "barra", "aparencia": "aparência",
+                "escala": "escala da interface",
                 "papel": "papel de parede", "teclado": "teclado", "touchpad": "touchpad",
                 "areas": "áreas de trabalho"}
 
@@ -1000,6 +1053,8 @@ def aplicar(v, antes, progresso=lambda _t: None):
         return []
     sway_muda = set(TODAS) & set(mudou)
 
+    if "escala" in mudou:
+        v["_escala_fixa"] = True
     if sway_muda:
         # o arquivo inteiro sai dos valores da tela: nada fica velho nele
         progresso("Conferindo e gravando a configuração do Sway…")
@@ -1095,9 +1150,9 @@ def restaurar(base, progresso=lambda _t: None):
         if os.path.exists(SWAY_ORIGINAL):
             shutil.copy2(SWAY_ORIGINAL, SWAY_CONF)
         sway_garantir_include()
-        # teclado, touchpad, cursor e papel de parede continuam como estavam
+        # teclado, touchpad, cursor, escala e papel de parede continuam como estavam
         gravar_texto(TWEAKS_CONF, tweaks_texto(atual, ("teclado", "touchpad", "aparencia",
-                                                       "papel")))
+                                                       "escala", "papel")))
     sway_recarregar()
     if not sway_rodando():
         waybar_recarregar()
@@ -1220,13 +1275,19 @@ class JanelaTweaks(Gtk.ApplicationWindow):
             sys.path.insert(0, "/usr/lib/voidbr")
             import voidbr_sddm_aba
             rolagem = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
-            self.aba_login = voidbr_sddm_aba.criar_aba(self, com_botao=False)
+            try:
+                self.aba_login = voidbr_sddm_aba.criar_aba(self, com_botao=False)
+            except TypeError:  # voidbr-sddm-themes antigo: a aba vem com o botão próprio
+                self.aba_login = voidbr_sddm_aba.criar_aba(self)
             rolagem.set_child(self.aba_login)
             self.indice_aba["login"] = self.abas.append_page(
                 rolagem, Gtk.Label(label="🔐 Tela de login"))
             self.abas.set_scrollable(True)
-        except Exception:  # noqa: BLE001 - sem o pacote (ou erro nele): segue sem a aba
-            pass
+        except ImportError:
+            pass  # sem o voidbr-sddm-themes: o app segue sem a aba
+        except Exception as erro:  # noqa: BLE001 - erro na aba não derruba o app
+            self.aba_login = None
+            print(f"aba Tela de login desligada: {erro}", file=sys.stderr)
         caixa.append(self.abas)
 
         st = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -1400,6 +1461,12 @@ class JanelaTweaks(Gtk.ApplicationWindow):
         self.w_cursor = self._lista(g, "Tema do cursor", self.op_cursor)
         self.w_cursor_tam = self._escala(g, "Tamanho do cursor", 16, 64, 8, " px",
                                          "Nos apps já abertos o cursor muda no próximo login.")
+        self._secao(g, "Tamanho")
+        self.w_escala = self._escala(g, "Escala da interface", TELA_MIN, TELA_MAX, 10, "%",
+                                     "Aumenta tudo na tela: janelas, barra, textos e cursor "
+                                     "(útil em telas de alta resolução). Vale para todos os "
+                                     "monitores. Fora de 100% e 200%, apps antigos (X11) podem "
+                                     "ficar um pouco borrados.")
         self._secao(g, "Fonte da interface")
         self.op_fonte_ui = familias_fonte(g)
         self.w_fonte_ui = self._lista(g, "Fonte", self.op_fonte_ui, busca=True)
@@ -1487,6 +1554,7 @@ class JanelaTweaks(Gtk.ApplicationWindow):
         self.w_cursor_tam.set_value(v["cursor_tam"])
         _escolha(self.w_fonte_ui, self.op_fonte_ui, v["fonte_ui"])
         self.w_fonte_ui_tam.set_value(v["fonte_ui_tam"])
+        self.w_escala.set_value(v["escala"])
 
         _escolha(self.w_papel, self.op_papel, v["papel"])
         _escolha(self.w_papel_modo, PAPEL_MODOS, v["papel_modo"])
@@ -1533,6 +1601,7 @@ class JanelaTweaks(Gtk.ApplicationWindow):
             "cursor_tam": int(self.w_cursor_tam.get_value()),
             "fonte_ui": self._valor_dd(self.w_fonte_ui) or a["fonte_ui"],
             "fonte_ui_tam": int(self.w_fonte_ui_tam.get_value()),
+            "escala": int(round(self.w_escala.get_value() / 10) * 10),
             "papel": self._valor_dd(self.w_papel) or a["papel"],
             "papel_modo": self._valor_dd(self.w_papel_modo),
             "layouts": self.w_layouts.get_text().strip(),
@@ -1550,6 +1619,7 @@ class JanelaTweaks(Gtk.ApplicationWindow):
             "areas_nomes": self.w_areas_nomes.get_text().strip(),
             "areas_formato": self._valor_dd(self.w_areas_formato),
             "_xkb_opcoes": a.get("_xkb_opcoes", []),
+            "_escala_fixa": a.get("_escala_fixa", False),
         }
 
     def recarregar(self):
@@ -1572,7 +1642,8 @@ class JanelaTweaks(Gtk.ApplicationWindow):
 
     def ao_clicar_aplicar(self, *_):
         # a tela de login (aba do voidbr-sddm-themes) vai junto no mesmo Aplicar
-        if self.aba_login is not None and self.aba_login.pendente():
+        pendente = getattr(self.aba_login, "pendente", None)  # aba antiga não tem
+        if pendente is not None and pendente():
             self.aba_login.aplicar()
         v = self.coletar()
         self._botoes(False)
@@ -1590,7 +1661,7 @@ class JanelaTweaks(Gtk.ApplicationWindow):
         if erro:
             self.status(f"⚠️ {erro}")
         elif not feito:
-            if not (self.aba_login and self.aba_login.ocupado):
+            if not getattr(self.aba_login, "ocupado", False):
                 self.status("ℹ️ Nada mudou.")
         else:
             self.antes = copy.deepcopy(v)
